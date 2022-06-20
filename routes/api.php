@@ -20,6 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', [UserController::class, 'index'])->name("api::get.users");
+Route::apiResource('/users', UserController::class);
 
-Route::post('/saveUser', [UserController::class, 'store'])->name("api::post.users");
+// Route::get('/user', [UserController::class, 'show'])->name("api::get.user");
+
+// Route::post('/saveUser', [UserController::class, 'store'])->name("api::post.users");
+
+// Route::put('/updateUser', [UserController::class, 'update'])->name("api::put.users");

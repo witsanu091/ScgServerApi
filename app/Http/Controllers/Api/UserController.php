@@ -18,9 +18,9 @@ class UserController extends Controller
 
 
     public function index()
-    {   
+    {
         try {
-            
+
             $data = UserModel::all();
             if ($data !== "") {
                 echo json_encode([
@@ -29,8 +29,7 @@ class UserController extends Controller
                     "data" => $data,
 
                 ]);
-               return;
-                
+                return;
             } else {
                 echo json_encode([
                     "status" => "failed",
@@ -80,7 +79,7 @@ class UserController extends Controller
             $users->save();
 
             if ($users) {
-    
+
                 $Notification = new Notification();
                 $LineNotify = $Notification->notification($users);
 
@@ -117,9 +116,13 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(UserModel $userModel)
     {
-        //
+        try {
+            return response()->json($userModel);
+        } catch (Exception $e) {
+            return response()->json(null);
+        }
     }
 
     /**
@@ -131,7 +134,53 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $request->validate([
+
+                'firstname' => 'required',
+                'lastname' => 'required',
+                'username' => 'required',
+                'email' => 'required',
+                'phone' => 'required',
+                'password' => 'required',
+
+            ]);
+            $users =  UserModel::find($id);
+            $users->firstname = $request->firstname;
+            $users->lastname = $request->lastname;
+            $users->username = $request->username;
+            $users->email = $request->email;
+            $users->phone = $request->phone;
+            $users->password = $request->password;
+            $users->save();
+
+            if ($users) {
+
+                echo json_encode([
+                    "status" => "success",
+                    "message" => "บันทึกสำเร็จ",
+                    "data" => $users,
+
+                ]);
+                return;
+            } else {
+                echo json_encode([
+                    "status" => "failed",
+                    "message" => "บันทึกไม่สำเร็จ",
+                    "data" => null,
+
+                ]);
+                return;
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                "status" => "failed",
+                "message" => "เกิดข้อผิดพลาด",
+                "data" => $e,
+
+            ]);
+            return;
+        }
     }
 
     /**
@@ -140,8 +189,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(UserModel $userModel)
     {
-        //
+        $userModel->delete();
+        echo json_encode([
+            "status" => "failed",
+            "message" => "เกิดข้อผิดพลาด",
+            "data" => $userModel,
+
+        ]);
     }
 }
