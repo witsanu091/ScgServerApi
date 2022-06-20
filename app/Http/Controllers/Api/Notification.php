@@ -9,7 +9,8 @@ class Notification extends Controller
 {
     public function notification($message){
         try{
-            if($message){  $url        = 'https://notify-api.line.me/api/notify';
+            if($message){  
+                $url        = 'https://notify-api.line.me/api/notify';
                 $token      = 'KD5kkoddmmlMavdN3NhcpUNgoDp6gNl1j1zzhNSLkZW';
                 $headers    = [
                                 'Content-Type: application/x-www-form-urlencoded',
