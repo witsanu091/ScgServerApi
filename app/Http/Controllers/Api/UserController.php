@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\UserModel;
+use App\Http\Controllers\Api\Notification;
 use Exception;
 
 class UserController extends Controller
@@ -17,8 +18,9 @@ class UserController extends Controller
 
 
     public function index()
-    {
+    {   
         try {
+            
             $data = UserModel::all();
             if ($data !== "") {
                 echo json_encode([
@@ -27,7 +29,8 @@ class UserController extends Controller
                     "data" => $data,
 
                 ]);
-                return;
+               return;
+                
             } else {
                 echo json_encode([
                     "status" => "failed",
@@ -75,14 +78,19 @@ class UserController extends Controller
             $users->phone = $request->phone;
             $users->password = $request->password;
             $users->save();
+
             if ($users) {
+    
+                $Notification = new Notification();
+                $LineNotify = $Notification->notification($users);
+
                 echo json_encode([
                     "status" => "success",
                     "message" => "บันทึกสำเร็จ",
                     "data" => $users,
 
                 ]);
-                return;
+                return $LineNotify;
             } else {
                 echo json_encode([
                     "status" => "failed",
