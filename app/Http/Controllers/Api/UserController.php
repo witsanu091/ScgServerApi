@@ -116,12 +116,35 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(UserModel $userModel)
+    public function show($id)
     {
         try {
-            return response()->json($userModel);
+            $user = UserModel::find($id);
+            if ($user) {
+                echo json_encode([
+                    "status" => "success",
+                    "message" => "สำเร็จ",
+                    "data" => $user,
+
+                ]);
+                return;
+            } else {
+                echo json_encode([
+                    "status" => "failed",
+                    "message" => "ไม่พบข้อมูล",
+                    "data" => null,
+
+                ]);
+                return;
+            }
         } catch (Exception $e) {
-            return response()->json(null);
+            echo json_encode([
+                "status" => "failed",
+                "message" => "เกิดข้อผิดพลาด",
+                "data" => null,
+
+            ]);
+            return;
         }
     }
 
@@ -189,14 +212,37 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserModel $userModel)
+    public function destroy($id)
     {
-        $userModel->delete();
-        echo json_encode([
-            "status" => "failed",
-            "message" => "เกิดข้อผิดพลาด",
-            "data" => $userModel,
+        try {
+            $user = UserModel::find($id);
+            if ($user) {
+                $user->delete();
 
-        ]);
+                echo json_encode([
+                    "status" => "success",
+                    "message" => "ลบสำเร็จ",
+                    "data" => $user,
+
+                ]);
+                return;
+            } else {
+                echo json_encode([
+                    "status" => "failed",
+                    "message" => "ไม่พบข้อมูล",
+                    "data" => null,
+
+                ]);
+                return;
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                "status" => "failed",
+                "message" => "เกิดข้อผิดพลาด",
+                "data" => null,
+
+            ]);
+            return;
+        }
     }
 }
